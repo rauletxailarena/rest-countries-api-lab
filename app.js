@@ -44,10 +44,22 @@ var populateContinentDropdown = function(countries){
   }
 }
 
+var clearCountrySelect = function() {
+  var countrySelect = document.getElementById('select-country');
+  countrySelect.innerHTML = "";
+}
+
 var render = function(countries){
   populateContinentDropdown(countries)
-  populateDropdown(countries);
+  // populateDropdown(countries);
   getStoredCountry(countries);
+
+  var continentSelect = document.getElementById("select-continent");
+  continentSelect.addEventListener("change", function(){
+    console.log(this.value);
+    populateDropdownByContinent(countries, continentSelect.value);
+  });
+
   var select = document.getElementById("select-country");
   select.addEventListener("change", function(){
     for(var country of countries){
@@ -59,6 +71,8 @@ var render = function(countries){
       }
     }
   });
+
+
 }
 
 var getStoredCountry = function(countries){
@@ -75,6 +89,18 @@ var populateDropdown = function(countries){
     var option = document.createElement("option");
     option.innerText = country.name;
     select.appendChild(option);
+  }
+}
+
+var populateDropdownByContinent = function(countries, continent){
+  clearCountrySelect()
+  var select = document.getElementById("select-country");
+  for(var country of countries){
+    if (country.region === continent){
+    var option = document.createElement("option");
+    option.innerText = country.name;
+    select.appendChild(option);
+  }
   }
 }
 
