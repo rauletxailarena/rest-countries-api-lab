@@ -14,7 +14,8 @@ var makeRequest = function( url ) {
   request.open( "GET", url );
   request.addEventListener( "load", function() {
     var countries = JSON.parse( this.responseText );
-    addCountriesToList( countries )
+    // addCountriesToList( countries )
+    populateDropdown(countries);
   })
   request.send()
 }
@@ -32,3 +33,13 @@ buttonClear.addEventListener("click", function(){
   }
   // ul.innerHTML = "";
 });
+
+var populateDropdown = function(countries){
+  var select = document.getElementById("select");
+
+  for(var country of countries){
+    var option = document.createElement("option");
+    option.innerText = country.name;
+    select.appendChild(option);
+  }
+}
