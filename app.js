@@ -20,16 +20,40 @@ var makeRequest = function( url ) {
   request.send();
 }
 
+var contains = function (object, collection) {
+    for (var i = 0; i < collection.length; i++) {
+        if (collection[i] === object) {
+            return true;
+        }
+    }
+    return false;
+}
+
+var populateContinentDropdown = function(countries){
+  var continents = []
+  for (var country of countries){
+    if (contains(country.region, continents) === false){
+      continents.push(country.region)
+    }
+  }
+  var continentDropdown = document.getElementById('select-continent');
+  for (var continent of continents){
+    var continentOption = document.createElement('option');
+    continentOption.textContent = continent;
+    continentDropdown.appendChild(continentOption);
+  }
+}
+
 var render = function(countries){
-  console.log(countries)
+  populateContinentDropdown(countries)
   populateDropdown(countries);
   getStoredCountry(countries);
-  var select = document.getElementById("select");
+  var select = document.getElementById("select-country");
   select.addEventListener("change", function(){
     for(var country of countries){
       if(country.name === select.value){
         clearDisplay();
-        displayCountryInfo(country, countries);
+        displayCountryInfo(country, countries, "h1");
         displayNeighbours(country, countries);
         save(country);
       }
@@ -40,12 +64,12 @@ var render = function(countries){
 var getStoredCountry = function(countries){
   var countryString = localStorage.getItem("selectedCountry") || "{}";
   var country = JSON.parse(countryString);
-  displayCountryInfo(country, countries);
+  displayCountryInfo(country, countries, "h1");
   displayNeighbours(country, countries);
 }
 
 var populateDropdown = function(countries){
-  var select = document.getElementById("select");
+  var select = document.getElementById("select-country");
 
   for(var country of countries){
     var option = document.createElement("option");
@@ -72,19 +96,19 @@ var displayNeighbours = function(countryObject, countries){
     for (var country of countries){
       if (neighbour === country.alpha3Code){
       console.log(neighbour);
-      displayCountryInfo(country, countries);
+      displayCountryInfo(country, countries, "h3");
       }
     }
   }
   console.log(neighbours);
 }
 
-var displayCountryInfo = function(countryObject, countries){
+var displayCountryInfo = function(countryObject, countries, hsize){
     var countryDiv = document.getElementById("country-info");
     // clearDisplay();
     for(var country of countries){
       if(country.name === countryObject.name){
-        var h1 = document.createElement("h1");
+        var h1 = document.createElement(hsize);
         h1.innerText = country.name;
         countryDiv.appendChild(h1);
         var populationP = document.createElement("p");
