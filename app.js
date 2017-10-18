@@ -68,10 +68,12 @@ var render = function(countries){
         displayCountryInfo(country, countries, "h1");
         displayNeighbours(country, countries);
         save(country);
+        var lat = country.latlng[0];
+        var lng = country.latlng[1];
+        renderMap(lat, lng);
       }
     }
   });
-
 
 }
 
@@ -148,8 +150,18 @@ var displayCountryInfo = function(countryObject, countries, hsize){
         // displayNeighbours(country, countries);
       }
     }
+}
 
-
+var renderMap = function(lat, lng){
+  var coordinates = {lat: lat, lng: lng}
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 10,
+    center: coordinates
+  });
+  var marker = new google.maps.Marker({
+    position: coordinates,
+    map: map
+  });
 }
 
 var initialize = function(){
