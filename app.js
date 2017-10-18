@@ -1,5 +1,5 @@
 var url = "https://restcountries.eu/rest/v2/all"
-var countries;
+// var countries;
 
 var addCountriesToList = function( countries ) {
   var ul = document.getElementById("countries");
@@ -16,24 +16,31 @@ var makeRequest = function( url ) {
   request.addEventListener( "load", function() {
   countries = JSON.parse( this.responseText )
     // addCountriesToList( countries )
-    populateDropdown(countries);
+    render(countries)
   })
-  request.send()
+  request.send();
 }
 
-// var button = document.getElementById("btn");
-// button.addEventListener("click", function(){
-//   makeRequest(url);
-// });
+var render = function(countries){
+  console.log(countries)
+  populateDropdown(countries);
+  getStoredCountry(countries);
+  var select = document.getElementById("select");
+  select.addEventListener("change", function(){
+    for(var country of countries){
+      if(country.name === select.value){
+        displayCountryInfo(country, countries);
+        save(country);
+      }
+    }
+  });
+}
 
-// var buttonClear = document.getElementById("clear");
-// buttonClear.addEventListener("click", function(){
-//     var ul = document.getElementById("countries");
-//   while(ul.firstChild) {
-//     ul.removeChild(ul.firstChild)
-//   }
-//   // ul.innerHTML = "";
-// });
+var getStoredCountry = function(countries){
+  var countryString = localStorage.getItem("selectedCountry") || "{}";
+  var country = JSON.parse(countryString);
+  displayCountryInfo(country, countries);
+}
 
 var populateDropdown = function(countries){
   var select = document.getElementById("select");
@@ -45,16 +52,21 @@ var populateDropdown = function(countries){
   }
 }
 
-  var select = document.getElementById("select");
-  select.addEventListener("change", function(){
-    displayCountryInfo(select.value);
-  })
+var save = function(country){
+  localStorage.setItem("selectedCountry", JSON.stringify(country));
+}
 
-  var displayCountryInfo = function(value){
+var clearDisplay = function(){
+  var display = document.getElementById("country-info");
+  display.innerHTML = "";
+}
+
+
+var displayCountryInfo = function(countryObject, countries){
     var countryDiv = document.getElementById("country-info");
-
+    clearDisplay();
     for(var country of countries){
-      if(country.name === value){
+      if(country.name === countryObject.name){
         var h1 = document.createElement("h1");
         h1.innerText = country.name;
         countryDiv.appendChild(h1);
@@ -68,8 +80,10 @@ var populateDropdown = function(countries){
     }
 
 
-  }
+}
 
-window.addEventListener("load", function(){
+var initialize = function(){
   makeRequest(url);
-} );
+}
+
+window.addEventListener("load", initialize);
