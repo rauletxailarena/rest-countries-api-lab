@@ -58,6 +58,12 @@ var populateDropdown = function(countries){
         var h1 = document.createElement("h1");
         h1.innerText = country.name;
         countryDiv.appendChild(h1);
+        var populationP = document.createElement("p");
+        populationP.innerText = "Population: " + country.population;
+        countryDiv.appendChild(populationP);
+        var capitalP = document.createElement("p");
+        capitalP.innerText = "Capital city: " + country.capital;
+        countryDiv.appendChild(capitalP);
       }
     }
 
