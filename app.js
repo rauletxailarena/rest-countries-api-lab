@@ -74,7 +74,6 @@ var render = function(countries){
       }
     }
   });
-
 }
 
 var getStoredCountry = function(countries){
@@ -82,6 +81,9 @@ var getStoredCountry = function(countries){
   var country = JSON.parse(countryString);
   displayCountryInfo(country, countries, "h1");
   displayNeighbours(country, countries);
+  if (country !== {}){
+    renderMap(country.latlng[0], country.latlng[1]);
+  }
 }
 
 var populateDropdown = function(countries){
@@ -116,8 +118,9 @@ var clearDisplay = function(){
 }
 
 var displayNeighbours = function(countryObject, countries){
+  console.log(countryObject);
   var neighbours = [];
-  for(var neighbourCode of countryObject.borders){
+  for(var neighbourCode of countryObject.borders || []){
     neighbours.push(neighbourCode);
   }
   for (var neighbour of neighbours){
@@ -147,7 +150,6 @@ var displayCountryInfo = function(countryObject, countries, hsize){
         countryDiv.appendChild(capitalP);
         console.log(country.borders);
         console.log(country.alpha3Code);
-        // displayNeighbours(country, countries);
       }
     }
 }
@@ -155,7 +157,7 @@ var displayCountryInfo = function(countryObject, countries, hsize){
 var renderMap = function(lat, lng){
   var coordinates = {lat: lat, lng: lng}
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 10,
+    zoom: 5,
     center: coordinates
   });
   var marker = new google.maps.Marker({
