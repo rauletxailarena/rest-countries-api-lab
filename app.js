@@ -1,4 +1,5 @@
 var url = "https://restcountries.eu/rest/v2/all"
+var countries;
 
 var addCountriesToList = function( countries ) {
   var ul = document.getElementById("countries");
@@ -13,26 +14,26 @@ var makeRequest = function( url ) {
   var request = new XMLHttpRequest();
   request.open( "GET", url );
   request.addEventListener( "load", function() {
-    var countries = JSON.parse( this.responseText );
+  countries = JSON.parse( this.responseText )
     // addCountriesToList( countries )
     populateDropdown(countries);
   })
   request.send()
 }
 
-var button = document.getElementById("btn");
-button.addEventListener("click", function(){
-  makeRequest(url);
-});
+// var button = document.getElementById("btn");
+// button.addEventListener("click", function(){
+//   makeRequest(url);
+// });
 
-var buttonClear = document.getElementById("clear");
-buttonClear.addEventListener("click", function(){
-    var ul = document.getElementById("countries");
-  while(ul.firstChild) {
-    ul.removeChild(ul.firstChild)
-  }
-  // ul.innerHTML = "";
-});
+// var buttonClear = document.getElementById("clear");
+// buttonClear.addEventListener("click", function(){
+//     var ul = document.getElementById("countries");
+//   while(ul.firstChild) {
+//     ul.removeChild(ul.firstChild)
+//   }
+//   // ul.innerHTML = "";
+// });
 
 var populateDropdown = function(countries){
   var select = document.getElementById("select");
@@ -43,3 +44,26 @@ var populateDropdown = function(countries){
     select.appendChild(option);
   }
 }
+
+  var select = document.getElementById("select");
+  select.addEventListener("change", function(){
+    displayCountryInfo(select.value);
+  })
+
+  var displayCountryInfo = function(value){
+    var countryDiv = document.getElementById("country-info");
+
+    for(var country of countries){
+      if(country.name === value){
+        var h1 = document.createElement("h1");
+        h1.innerText = country.name;
+        countryDiv.appendChild(h1);
+      }
+    }
+
+
+  }
+
+window.addEventListener("load", function(){
+  makeRequest(url);
+} );
