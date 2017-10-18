@@ -1,5 +1,4 @@
 var url = "https://restcountries.eu/rest/v2/all"
-// var countries;
 
 var addCountriesToList = function( countries ) {
   var ul = document.getElementById("countries");
@@ -29,7 +28,9 @@ var render = function(countries){
   select.addEventListener("change", function(){
     for(var country of countries){
       if(country.name === select.value){
+        clearDisplay();
         displayCountryInfo(country, countries);
+        displayNeighbours(country, countries);
         save(country);
       }
     }
@@ -40,6 +41,7 @@ var getStoredCountry = function(countries){
   var countryString = localStorage.getItem("selectedCountry") || "{}";
   var country = JSON.parse(countryString);
   displayCountryInfo(country, countries);
+  displayNeighbours(country, countries);
 }
 
 var populateDropdown = function(countries){
@@ -61,10 +63,25 @@ var clearDisplay = function(){
   display.innerHTML = "";
 }
 
+var displayNeighbours = function(countryObject, countries){
+  var neighbours = [];
+  for(var neighbourCode of countryObject.borders){
+    neighbours.push(neighbourCode);
+  }
+  for (var neighbour of neighbours){
+    for (var country of countries){
+      if (neighbour === country.alpha3Code){
+      console.log(neighbour);
+      displayCountryInfo(country, countries);
+      }
+    }
+  }
+  console.log(neighbours);
+}
 
 var displayCountryInfo = function(countryObject, countries){
     var countryDiv = document.getElementById("country-info");
-    clearDisplay();
+    // clearDisplay();
     for(var country of countries){
       if(country.name === countryObject.name){
         var h1 = document.createElement("h1");
@@ -76,6 +93,9 @@ var displayCountryInfo = function(countryObject, countries){
         var capitalP = document.createElement("p");
         capitalP.innerText = "Capital city: " + country.capital;
         countryDiv.appendChild(capitalP);
+        console.log(country.borders);
+        console.log(country.alpha3Code);
+        // displayNeighbours(country, countries);
       }
     }
 
